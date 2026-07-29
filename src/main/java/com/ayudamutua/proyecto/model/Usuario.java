@@ -1,16 +1,29 @@
 package com.ayudamutua.proyecto.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+
+
+@Entity
+@Table(name = "detalles_usuario")
 public class Usuario {
-	
-	private String segundoNombre;
-	private String primerApellido;
-	private String segundoApellido;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private String correo;
 	private String telefono;
 	private String password;
-	private Long id;
 	
 	private String primerNombre;
+	private String segundoNombre;
+	private String primerApellido;
+	private String segundoApellido;
+	private LocalDate cumpleanos;
+	
 	public String getPrimerNombre() {
 		return primerNombre;
 	}
@@ -41,6 +54,13 @@ public class Usuario {
 
 	public void setSegundoApellido(String segundoApellido) {
 		this.segundoApellido = segundoApellido;
+	}
+	public LocalDate getCumpleanos() {
+		return cumpleanos;
+	}
+
+	public void setCumpleanos(LocalDate cumpleanos) {
+		this.cumpleanos = cumpleanos;
 	}
 
 	public String getCorreo() {
@@ -80,9 +100,9 @@ public class Usuario {
 
 	@Override
 	public String toString() {
-		return "Usuario [segundoNombre=" + segundoNombre + ", primerApellido=" + primerApellido + ", segundoApellido="
-				+ segundoApellido + ", correo=" + correo + ", telefono=" + telefono + ", id=" + id + ", primerNombre="
-				+ primerNombre + "]";
+		return "Usuario [id=" + id + ", correo=" + correo + ", telefono=" + telefono + ", primerNombre=" + primerNombre
+				+ ", segundoNombre=" + segundoNombre + ", primerApellido=" + primerApellido + ", segundoApellido="
+				+ segundoApellido + ", cumpleanos=" + cumpleanos + "]";
 	}
 	
 }
