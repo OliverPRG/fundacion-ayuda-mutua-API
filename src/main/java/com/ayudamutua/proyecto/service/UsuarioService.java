@@ -27,7 +27,7 @@ public class UsuarioService {
 	public void borrarUsuario(Long id) {
 		 usuarioRepository.deleteById(id);
 	}
-	public Usuario actualizarUsuario(Usuario actualizadoUsuario) {
-		return usuarioRepository.save(actualizadoUsuario);
+	public Usuario actualizarUsuario(Usuario usuarioActualizado) {
+		return usuarioRepository.save(usuarioActualizado);
 	}
 }
