@@ -1,27 +1,49 @@
 package com.ayudamutua.proyecto.model;
 
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 
 @Entity
 @Table(name = "detalles_usuario")
+@JsonPropertyOrder({"id", "primerNombre", "segundoNombre", "primerApellido", "segundoApellido", "correo", "telefono", "cumpleanos"})
 public class Usuario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@Email
+	@NotBlank(message="Introduce un email valido")
 	private String correo;
+	
+	@Pattern(regexp = "^\\d{10}$", message = "El teléfono debe contener exactamente 10 números")
+	@NotNull(message="Introduce un numero de celular valido")
 	private String telefono;
+	
 	private String password;
 	
+	@NotBlank(message="Introduce tu primer nombre")
 	private String primerNombre;
+	
 	private String segundoNombre;
+	
+	@NotBlank(message="Introduce tu primer apellido")
 	private String primerApellido;
+	
+	@NotBlank(message="Introduce tu segundo apellido")
 	private String segundoApellido;
+	
 	private LocalDate cumpleanos;
 	
 	public String getPrimerNombre() {

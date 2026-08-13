@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ayudamutua.proyecto.model.Usuario;
 import com.ayudamutua.proyecto.service.UsuarioService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -28,7 +30,7 @@ public class UsuarioController {
 	}
 	
 	@PostMapping
-	public Usuario crearUsuario(@RequestBody Usuario nuevoUsuario) {
+	public Usuario crearUsuario(@Valid @RequestBody Usuario nuevoUsuario) {
 		return usuarioService.crearUsuario(nuevoUsuario);
 	}
 	
@@ -43,7 +45,7 @@ public class UsuarioController {
 	}
 	
 	@PutMapping("/{id}")
-	public Usuario usuarioActualizado (@PathVariable Long id, @RequestBody Usuario actualizacionDeUsuario) {
+	public Usuario usuarioActualizado (@PathVariable Long id, @Valid @RequestBody Usuario actualizacionDeUsuario) {
 		actualizacionDeUsuario.setId(id);
 		return usuarioService.actualizarUsuario(actualizacionDeUsuario);
 	}
