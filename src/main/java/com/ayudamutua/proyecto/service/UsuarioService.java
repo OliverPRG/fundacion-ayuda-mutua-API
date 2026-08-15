@@ -19,7 +19,13 @@ public class UsuarioService {
 		return usuarioRepository.findAll();
 	}
 	public Usuario crearUsuario(Usuario nuevoUsuario) {
-		return usuarioRepository.save(nuevoUsuario);
+		if (usuarioRepository.existsByCorreo(nuevoUsuario.getCorreo())) {
+			throw new IllegalArgumentException("El correo electronico ingresado ya existe");
+		}
+		if (usuarioRepository.existsByTelefono(nuevoUsuario.getTelefono())) {
+			throw new IllegalArgumentException("El telefono ingresado ya existe");
+		}
+			return usuarioRepository.save(nuevoUsuario);
 	}
 	public Optional<Usuario> buscarUsuarioPorId(Long id) {
 		return usuarioRepository.findById(id);
