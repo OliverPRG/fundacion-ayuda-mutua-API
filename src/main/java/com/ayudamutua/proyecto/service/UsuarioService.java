@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.ayudamutua.proyecto.dto.LoginRequestDTO;
 import com.ayudamutua.proyecto.model.Usuario;
 import com.ayudamutua.proyecto.repository.UsuarioRepository;
 
@@ -41,5 +43,17 @@ public class UsuarioService {
 	}
 	public Usuario actualizarUsuario(Usuario usuarioActualizado) {
 		return usuarioRepository.save(usuarioActualizado);
-	}	
+	}
+	public String autenticarUsuario(LoginRequestDTO loginData) {
+		Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(loginData.getCorreo());
+		if (usuarioOpt.isEmpty()) {
+			throw new IllegalArgumentException("Correo electronico o contraseña incorrectos");
+		}	
+		Usuario usuarioReal = usuarioOpt.get();
+		if (!passwordEncoder.matches(loginData.getPassword(), usuarioReal.getPassword())) {
+			throw new IllegalArgumentException("Correo electronico o contraseña incorrectos");
+		}
+		return "¡Login exitoso! Bienvenido a Ayuda Mutua, " + usuarioReal.getPrimerNombre();
+		
+	}
 }

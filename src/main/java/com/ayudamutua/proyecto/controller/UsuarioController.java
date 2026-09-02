@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ayudamutua.proyecto.dto.LoginRequestDTO;
 import com.ayudamutua.proyecto.dto.UsuarioResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -69,4 +70,8 @@ public class UsuarioController {
         dto.setCumpleanos(usuario.getCumpleanos());
         return dto;
     }
+	@PostMapping("/login")
+	public String loginUsuario(@Valid @RequestBody LoginRequestDTO loginData) {
+		return usuarioService.autenticarUsuario(loginData);
+		}
 }
