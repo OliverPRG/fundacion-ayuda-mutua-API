@@ -2,7 +2,9 @@ package com.ayudamutua.proyecto.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.ayudamutua.proyecto.dto.UsuarioResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,18 +27,23 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService usuarioService;
 	@GetMapping
-	public List<Usuario> obtenerTodosLosUsuarios() {
-		return usuarioService.regresarAllUsers();
+	public List<UsuarioResponseDTO> obtenerTodosLosUsuarios() {
+		return usuarioService.regresarAllUsers()
+				.stream()
+				.map(this::convertirADTO)
+				.collect(Collectors.toList());
 	}
 	
 	@PostMapping
-	public Usuario crearUsuario(@Valid @RequestBody Usuario nuevoUsuario) {
-		return usuarioService.crearUsuario(nuevoUsuario);
+	public UsuarioResponseDTO crearUsuario(@Valid @RequestBody Usuario nuevoUsuario) {
+		Usuario usuarioGuardado = usuarioService.crearUsuario(nuevoUsuario);
+		return convertirADTO(usuarioGuardado);
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
-		return usuarioService.buscarUsuarioPorId(id);
+	public Optional<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Long id) {
+		return usuarioService.buscarUsuarioPorId(id)
+				.map(this::convertirADTO);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -45,8 +52,21 @@ public class UsuarioController {
 	}
 	
 	@PutMapping("/{id}")
-	public Usuario usuarioActualizado (@PathVariable Long id, @Valid @RequestBody Usuario actualizacionDeUsuario) {
+	public UsuarioResponseDTO usuarioActualizado (@PathVariable Long id, @Valid @RequestBody Usuario actualizacionDeUsuario) {
 		actualizacionDeUsuario.setId(id);
-		return usuarioService.actualizarUsuario(actualizacionDeUsuario);
+		Usuario actualizado = usuarioService.actualizarUsuario(actualizacionDeUsuario);
+		return convertirADTO(actualizado);
 	}
+	private UsuarioResponseDTO convertirADTO(Usuario usuario) {
+        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+        dto.setId(usuario.getId());
+        dto.setPrimerNombre(usuario.getPrimerNombre());
+        dto.setSegundoNombre(usuario.getSegundoNombre());
+        dto.setPrimerApellido(usuario.getPrimerApellido());
+        dto.setSegundoApellido(usuario.getSegundoApellido());
+        dto.setCorreo(usuario.getCorreo());
+        dto.setTelefono(usuario.getTelefono());
+        dto.setCumpleanos(usuario.getCumpleanos());
+        return dto;
+    }
 }

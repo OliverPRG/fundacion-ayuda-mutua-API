@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 
 @Entity
@@ -23,14 +24,20 @@ public class Usuario {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Email
-	@NotBlank(message="Introduce un email valido")
+	@Email(message="El formato del correo electronico no es válido")
+	@NotBlank(message="El correo electronico es obligatorio")
 	private String correo;
 	
 	@Pattern(regexp = "^\\d{10}$", message = "El teléfono debe contener exactamente 10 números")
 	@NotNull(message="Introduce un numero de celular valido")
 	private String telefono;
 	
+	@Pattern(
+			regexp = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&#.]).+$",
+			message = "La contraseña debe tener al menos 6 caracteres, una letra en mayuscula, números y almenos un caracter especial"
+			)
+	@NotBlank(message = "Crea una contraseña valida")
+	@Size(min = 6, max = 255)
 	private String password;
 	
 	@NotBlank(message="Introduce tu primer nombre")
