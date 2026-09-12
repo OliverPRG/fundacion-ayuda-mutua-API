@@ -11,6 +11,8 @@ import com.ayudamutua.proyecto.dto.LoginRequestDTO;
 import com.ayudamutua.proyecto.model.Usuario;
 import com.ayudamutua.proyecto.repository.UsuarioRepository;
 
+import jakarta.validation.Valid;
+
 @Service
 public class UsuarioService {
 
@@ -55,5 +57,9 @@ public class UsuarioService {
 		}
 		return "¡Login exitoso! Bienvenido a Ayuda Mutua, " + usuarioReal.getPrimerNombre();
 		
+	}
+	public boolean validarCredenciales(@Valid LoginRequestDTO loginData) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

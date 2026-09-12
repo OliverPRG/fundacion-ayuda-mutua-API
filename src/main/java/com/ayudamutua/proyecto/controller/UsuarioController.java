@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.ayudamutua.proyecto.dto.LoginRequestDTO;
-import com.ayudamutua.proyecto.dto.UsuarioResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ayudamutua.proyecto.dto.LoginRequestDTO;
+import com.ayudamutua.proyecto.dto.UsuarioResponseDTO;
 import com.ayudamutua.proyecto.model.Usuario;
+import com.ayudamutua.proyecto.security.JwtUtil;
 import com.ayudamutua.proyecto.service.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -25,6 +27,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+	@Autowired
+	private JwtUtil jwtUtil;
 	@Autowired
 	private UsuarioService usuarioService;
 	@GetMapping
@@ -71,7 +75,13 @@ public class UsuarioController {
         return dto;
     }
 	@PostMapping("/login")
-	public String loginUsuario(@Valid @RequestBody LoginRequestDTO loginData) {
-		return usuarioService.autenticarUsuario(loginData);
-		}
+	public ResponseEntity<String> loginUsuario(@Valid @RequestBody LoginRequestDTO loginData) {
+		boolean credencialesValidas = usuarioService.validarCredenciales(loginData);
+			if (credencialesValidas) {
+				String tokenGenerado = jwtUtil.generarToken(loginData.getCorreo());
+				return ResponseEntity.ok(tokenGenerado);
+			} else {
+				return ResponseEntity.status(401).body("Correo o contraseña incorrectos");
+			}
+	}
 }
