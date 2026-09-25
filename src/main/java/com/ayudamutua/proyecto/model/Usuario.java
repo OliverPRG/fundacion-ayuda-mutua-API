@@ -55,6 +55,8 @@ public class Usuario {
 	
 	private LocalDate cumpleanos;
 	
+	private String rol;
+	
 	public String getPrimerNombre() {
 		return primerNombre;
 	}
@@ -125,6 +127,14 @@ public class Usuario {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	public String getRol() {
+		return rol;
+	}
+
+	public void setRol(String rol) {
+		this.rol = rol;
+	}
+
 	public String getNombreCompleto() {
 		return primerNombre + " " + segundoNombre + " " + primerApellido + " " + segundoApellido;
 	}

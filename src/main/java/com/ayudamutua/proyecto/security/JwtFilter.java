@@ -8,11 +8,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import java.util.ArrayList;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -42,11 +45,14 @@ public class JwtFilter extends OncePerRequestFilter {
 		if (correo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			if (jwtUtil.validarToken(token)) {
 
-				UsernamePasswordAuthenticationToken registroDeEntrada = new UsernamePasswordAuthenticationToken(correo,
-						null, new ArrayList<>());
-
+				String rol = jwtUtil.extraerRol(token);				
+				
+				List<GrantedAuthority> permisos = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol));
+				
+				
+				UsernamePasswordAuthenticationToken registroDeEntrada = new UsernamePasswordAuthenticationToken(correo, null, permisos);				
+				
 				registroDeEntrada.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
 				SecurityContextHolder.getContext().setAuthentication(registroDeEntrada);
 			}
 		}

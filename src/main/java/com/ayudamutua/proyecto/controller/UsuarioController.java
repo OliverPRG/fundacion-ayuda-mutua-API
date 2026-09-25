@@ -31,57 +31,59 @@ public class UsuarioController {
 	private JwtUtil jwtUtil;
 	@Autowired
 	private UsuarioService usuarioService;
+
 	@GetMapping
 	public List<UsuarioResponseDTO> obtenerTodosLosUsuarios() {
-		return usuarioService.regresarAllUsers()
-				.stream()
-				.map(this::convertirADTO)
-				.collect(Collectors.toList());
+		return usuarioService.regresarAllUsers().stream().map(this::convertirADTO).collect(Collectors.toList());
 	}
-	
+
 	@PostMapping
 	public UsuarioResponseDTO crearUsuario(@Valid @RequestBody Usuario nuevoUsuario) {
 		Usuario usuarioGuardado = usuarioService.crearUsuario(nuevoUsuario);
 		return convertirADTO(usuarioGuardado);
 	}
-	
+
 	@GetMapping("/{id}")
 	public Optional<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Long id) {
-		return usuarioService.buscarUsuarioPorId(id)
-				.map(this::convertirADTO);
+		return usuarioService.buscarUsuarioPorId(id).map(this::convertirADTO);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public void eliminarUsuario(@PathVariable Long id) {
-		 usuarioService.borrarUsuario(id);
+		usuarioService.borrarUsuario(id);
 	}
-	
+
 	@PutMapping("/{id}")
-	public UsuarioResponseDTO usuarioActualizado (@PathVariable Long id, @Valid @RequestBody Usuario actualizacionDeUsuario) {
+	public UsuarioResponseDTO usuarioActualizado(@PathVariable Long id,
+			@Valid @RequestBody Usuario actualizacionDeUsuario) {
 		actualizacionDeUsuario.setId(id);
 		Usuario actualizado = usuarioService.actualizarUsuario(actualizacionDeUsuario);
 		return convertirADTO(actualizado);
 	}
+
 	private UsuarioResponseDTO convertirADTO(Usuario usuario) {
-        UsuarioResponseDTO dto = new UsuarioResponseDTO();
-        dto.setId(usuario.getId());
-        dto.setPrimerNombre(usuario.getPrimerNombre());
-        dto.setSegundoNombre(usuario.getSegundoNombre());
-        dto.setPrimerApellido(usuario.getPrimerApellido());
-        dto.setSegundoApellido(usuario.getSegundoApellido());
-        dto.setCorreo(usuario.getCorreo());
-        dto.setTelefono(usuario.getTelefono());
-        dto.setCumpleanos(usuario.getCumpleanos());
-        return dto;
-    }
+		UsuarioResponseDTO dto = new UsuarioResponseDTO();
+		dto.setId(usuario.getId());
+		dto.setPrimerNombre(usuario.getPrimerNombre());
+		dto.setSegundoNombre(usuario.getSegundoNombre());
+		dto.setPrimerApellido(usuario.getPrimerApellido());
+		dto.setSegundoApellido(usuario.getSegundoApellido());
+		dto.setCorreo(usuario.getCorreo());
+		dto.setTelefono(usuario.getTelefono());
+		dto.setCumpleanos(usuario.getCumpleanos());
+		return dto;
+	}
+
 	@PostMapping("/login")
 	public ResponseEntity<String> loginUsuario(@Valid @RequestBody LoginRequestDTO loginData) {
 		boolean credencialesValidas = usuarioService.validarCredenciales(loginData);
-			if (credencialesValidas) {
-				String tokenGenerado = jwtUtil.generarToken(loginData.getCorreo());
-				return ResponseEntity.ok(tokenGenerado);
-			} else {
-				return ResponseEntity.status(401).body("Correo o contraseña incorrectos");
-			}
+		if (credencialesValidas) {
+			Usuario usuario = usuarioService.buscarUsuarioPorCorreo(loginData.getCorreo())
+					.orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+			String tokenGenerado = jwtUtil.generarToken(loginData.getCorreo(), usuario.getRol());
+			return ResponseEntity.ok(tokenGenerado);
+		} else {
+			return ResponseEntity.status(401).body("Correo o contraseña incorrectos");
+		}
 	}
 }

@@ -15,14 +15,19 @@ public class JwtUtil {
 	private Key LLAVE_SECRETA = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 	private final long TIEMPO_SESION = 7200000;
 
-	public String generarToken(String correo) {
+	public String generarToken(String correo, String rol) {
 
 		long miliSegundosActuales = System.currentTimeMillis();
 		Date horaImpresion = new Date(miliSegundosActuales);
 		Date horaVencimiento = new Date(miliSegundosActuales + TIEMPO_SESION);
-
-		String sesionActiva = Jwts.builder().setSubject(correo).setIssuedAt(horaImpresion)
-				.setExpiration(horaVencimiento).signWith(LLAVE_SECRETA).compact();
+		
+		
+		String sesionActiva = Jwts.builder()
+				.setSubject(correo).setIssuedAt(horaImpresion)
+				.setExpiration(horaVencimiento)
+				.signWith(LLAVE_SECRETA)
+				.claim("rol", rol)
+				.compact();
 		return sesionActiva;
 	}
 
@@ -38,5 +43,14 @@ public class JwtUtil {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public String extraerRol(String token) {
+		return Jwts.parserBuilder()
+				.setSigningKey(LLAVE_SECRETA)
+				.build()
+				.parseClaimsJws(token)
+				.getBody()
+				.get("rol", String.class);
 	}
 }
