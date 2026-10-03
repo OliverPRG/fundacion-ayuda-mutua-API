@@ -46,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			if (jwtUtil.validarToken(token)) {
 
 				String rol = jwtUtil.extraerRol(token);				
-				
+				System.out.println("🕵️ ROL EXTRAÍDO DEL TOKEN: " + rol);
 				List<GrantedAuthority> permisos = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol));
 				
 				
