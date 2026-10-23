@@ -1,6 +1,7 @@
 package com.ayudamutua.proyecto.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +18,7 @@ public class Asistencia {
 	private Long id;
 
 	@JoinColumn(name = "usuario_id")
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Usuario usuario;
 
 	@JoinColumn(name = "evento_id")

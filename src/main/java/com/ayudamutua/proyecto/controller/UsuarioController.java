@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ayudamutua.proyecto.dto.LoginRequestDTO;
+import com.ayudamutua.proyecto.dto.UsuarioRequestDTO;
 import com.ayudamutua.proyecto.dto.UsuarioResponseDTO;
 import com.ayudamutua.proyecto.model.Usuario;
 import com.ayudamutua.proyecto.security.JwtUtil;
@@ -38,8 +39,8 @@ public class UsuarioController {
 	}
 
 	@PostMapping
-	public UsuarioResponseDTO crearUsuario(@Valid @RequestBody Usuario nuevoUsuario) {
-		Usuario usuarioGuardado = usuarioService.crearUsuario(nuevoUsuario);
+	public UsuarioResponseDTO crearUsuario(@Valid @RequestBody UsuarioRequestDTO requestDTO) {
+		Usuario usuarioGuardado = usuarioService.crearUsuario(requestDTO);
 		return convertirADTO(usuarioGuardado);
 	}
 
