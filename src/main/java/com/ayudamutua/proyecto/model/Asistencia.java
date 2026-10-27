@@ -22,7 +22,7 @@ public class Asistencia {
 	private Usuario usuario;
 
 	@JoinColumn(name = "evento_id")
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Evento evento;
 
 	public Long getId() {
